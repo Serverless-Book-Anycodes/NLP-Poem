@@ -1,0 +1,47 @@
+ServerlessBookPoemNLPCase:
+  Component: fc
+  Provider: alibaba
+  Access: anycodes_release
+  Properties:
+    Region: cn-hongkong
+    Service:
+      Name: serverless-book-case
+      Description: Serverless 实践图书案例
+      Vpc:
+        SecurityGroupId: sg-j6c45wkv4vf4ghg104mc
+        VSwitchIds:
+          - vsw-j6c797ywau90y6y03ohbq
+        VpcId: vpc-j6c9lk4av0859r4e0tff7
+      Log: Auto
+      Nas: Auto
+    Function:
+      Name: ai-nlp-poem
+      Description: ai写诗
+      CodeUri:
+        Src: ./src
+        Excludes:
+          - src/.fun
+          - src/model
+      Handler: index.handler
+      Environment:
+        - Key: PYTHONUSERBASE
+          Value: /mnt/auto/.fun/python
+      MemorySize: 3072
+      Runtime: python3
+      Timeout: 60
+      Triggers:
+        - Name: Poem
+          Type: HTTP
+          Parameters:
+            AuthType: ANONYMOUS
+            Methods:
+              - GET
+              - POST
+              - PUT
+            Domains:
+              - Domain: poem.nlp.case.serverless.fun
+                Protocol:
+                  - HTTP
+                Routes:
+                  - Path: '/*'
+
